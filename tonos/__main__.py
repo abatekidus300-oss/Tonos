@@ -112,6 +112,17 @@ def _chord_lines(r: dict) -> list[str]:
     return lines
 
 
+def _lab_report(r: dict) -> str:
+    """Return chord segments in the .lab format used by music-research tools."""
+    merged = []
+    for segment in r["chords"]["segments"]:
+        if merged and merged[-1]["label"] == segment["label"]:
+            merged[-1]["end"] = segment["end"]
+        else:
+            merged.append({"start": segment["start"], "end": segment["end"], "label": segment["label"]})
+    return "\n".join(f'{s["start"]:.3f}\t{s["end"]:.3f}\t{s["label"]}' for s in merged)
+
+
 def _text_report(r: dict) -> str:
     lines = [f"File:   {r['file']['name']} ({_mmss(r['file']['duration'])})", ""]
     lines += _tempo_lines(r["tempo"])
