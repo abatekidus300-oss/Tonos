@@ -1,8 +1,10 @@
 """End-to-end tests with the real models (about 1 minute in total)."""
 
+import itertools
 import subprocess
 from collections import Counter
 
+import mir_eval
 import numpy as np
 import pytest
 import soundfile as sf
@@ -172,4 +174,4 @@ def test_lab_report(pop_in_g, tmp_path):
     assert intervals[0, 0] == pytest.approx(segments[0]["start"], abs=0.001)
     assert intervals[-1, 1] == pytest.approx(segments[-1]["end"], abs=0.001)
     assert np.all(intervals[1:, 0] >= intervals[:-1, 1])
-    assert all(a != b for a, b in zip(labels, labels[1:]))
+    assert all(a != b for a, b in itertools.pairwise(labels))
